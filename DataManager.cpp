@@ -6,15 +6,15 @@
 #include <sstream>
 #include <string>
 
-extern Department* StoreDepartments;
-extern int TotalDepartments;
-extern const char* csvFile;
+extern Department* StoreDepartments; // Pointer to the array of departments
+extern int TotalDepartments; // Total number of departments in the store
+extern const char* csvFile; // Path to the CSV file for storing department and course data
 
-static bool splitDepartmentLine(const std::string& line,
+static bool splitDepartmentLine(const std::string& line, // Method to split a department line from the CSV file into its components
                                 std::string& name,
                                 int& courseCount)
 {
-    std::size_t comma = line.find(',');
+    std::size_t comma = line.find(','); // Find the position of the first comma in the line
 
     if (comma == std::string::npos)
     {
@@ -27,7 +27,7 @@ static bool splitDepartmentLine(const std::string& line,
     return static_cast<bool>(stream >> courseCount);
 }
 
-static bool splitCourseLine(const std::string& line,
+static bool splitCourseLine(const std::string& line, // Method to split a course line from the CSV file into its components
                             std::string& number,
                             std::string& name,
                             std::string& schedule,
@@ -63,7 +63,7 @@ static bool splitCourseLine(const std::string& line,
 
 bool loadDataFromCSV()
 {
-    std::ifstream file(csvFile);
+    std::ifstream file(csvFile); // Open the CSV file for reading
 
     if (!file)
     {
@@ -73,13 +73,13 @@ bool loadDataFromCSV()
 
     int departmentCount = 0;
 
-    if (!(file >> departmentCount))
+    if (!(file >> departmentCount)) 
     {
         std::cout << "CSV file is not in the expected format.\n";
         return false;
     }
 
-    file.ignore(10000, '\n');
+    file.ignore(10000, '\n'); // Ignore the rest of the line after reading the department count
 
     delete[] StoreDepartments;
     StoreDepartments = nullptr;
@@ -90,7 +90,7 @@ bool loadDataFromCSV()
         return true;
     }
 
-    StoreDepartments = new Department[departmentCount];
+    StoreDepartments = new Department[departmentCount]; // Allocate memory for the array of departments
 
     for (int i = 0; i < departmentCount; i++)
     {
@@ -105,21 +105,21 @@ bool loadDataFromCSV()
             return false;
         }
 
-        std::string departmentName;
+        std::string departmentName; // Variable to hold the department name
         int courseCount = 0;
 
         if (!splitDepartmentLine(departmentLine,
                                  departmentName,
                                  courseCount))
         {
-            std::cout << "Invalid department line in CSV.\n";
+            std::cout << "Invalid department line in CSV.\n"; // Error message for invalid department line
             delete[] StoreDepartments;
             StoreDepartments = nullptr;
             TotalDepartments = 0;
             return false;
         }
 
-        StoreDepartments[i].setDepartmentName(departmentName.c_str());
+        StoreDepartments[i].setDepartmentName(departmentName.c_str()); // Set the name of the department
 
         for (int j = 0; j < courseCount; j++)
         {
@@ -145,7 +145,7 @@ bool loadDataFromCSV()
                                  schedule,
                                  price))
             {
-                std::cout << "Invalid course line in CSV.\n";
+                std::cout << "Invalid course line in CSV.\n"; // Error message for invalid course line
                 delete[] StoreDepartments;
                 StoreDepartments = nullptr;
                 TotalDepartments = 0;
@@ -161,7 +161,7 @@ bool loadDataFromCSV()
     return true;
 }
 
-bool saveDataToCSV()
+bool saveDataToCSV() // Method to save the department and course data to a CSV file
 {
     std::ofstream file(csvFile);
 

@@ -2,7 +2,7 @@
 #include <iomanip>
 #include <iostream>
 
-Course::Course()
+Course::Course() // Default constructor to initialize a Course object
 {
     courseNumber = "";
     courseName = "";
@@ -10,7 +10,7 @@ Course::Course()
     price = 0.0;
 }
 
-Course::Course(const std::string& number,
+Course::Course(const std::string& number, // Parameterized constructor to initialize a Course object with specific values
                const std::string& name,
                const std::string& courseSchedule,
                double coursePrice)
@@ -21,7 +21,7 @@ Course::Course(const std::string& number,
     price = coursePrice;
 }
 
-void Course::setCourseNumber(const std::string& number)
+void Course::setCourseNumber(const std::string& number) // Method to set the course number
 {
     courseNumber = number;
 }
@@ -64,7 +64,7 @@ double Course::getPrice() const
     return price;
 }
 
-void Course::display() const
+void Course::display() const // Method to display the course details
 {
     std::cout << courseNumber << " | "
               << courseName << " | "

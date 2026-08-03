@@ -20,13 +20,13 @@ public:
 
     ~Department();
 
-    void setDepartmentName(const char* name);
+    void setDepartmentName(const char* name); // Method to set the name of the department
     const char* getDepartmentName() const;
 
-    int getTotalCourses() const;
+    int getTotalCourses() const; // Method to get the total number of courses in the department
     void addCourse(const Course& newCourse);
 
-    Course* getCourse(int index);
+    Course* getCourse(int index); // Method to get a pointer to a course at a specific index in the department
     const Course* getCourse(int index) const;
 
     void displayCourses() const;

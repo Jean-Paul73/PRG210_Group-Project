@@ -2,10 +2,10 @@
 #include "Department.h"
 #include <iostream>
 
-extern Department* StoreDepartments;
+extern Department* StoreDepartments; // Pointer to the array of departments
 extern int TotalDepartments;
 
-void StudentInterface::run()
+void StudentInterface::run() // Override the run method from the Interface class
 {
     while (true)
     {
@@ -34,7 +34,7 @@ void StudentInterface::run()
     }
 }
 
-void StudentInterface::showCartMenu()
+void StudentInterface::showCartMenu() // Method to display the cart menu and handle user interactions with the cart
 {
     while (true)
     {
@@ -73,7 +73,7 @@ void StudentInterface::showCartMenu()
     }
 }
 
-void StudentInterface::browseDepartments()
+void StudentInterface::browseDepartments() // Method to display the browse departments menu and handle user interactions with the departments
 {
     while (true)
     {
@@ -113,7 +113,7 @@ void StudentInterface::browseDepartments()
     }
 }
 
-void StudentInterface::showCoursesMenu(int departmentIndex)
+void StudentInterface::showCoursesMenu(int departmentIndex) // Method to display the courses menu for a specific department and handle user interactions with the courses
 {
     Department& department =
         StoreDepartments[departmentIndex];

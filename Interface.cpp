@@ -3,14 +3,14 @@
 #include <iostream>
 #include <sstream>
 
-extern Department* StoreDepartments;
+extern Department* StoreDepartments; // Pointer to the array of departments
 extern int TotalDepartments;
 
 Interface::~Interface()
 {
 }
 
-int Interface::readIntInRange(const std::string& prompt,
+int Interface::readIntInRange(const std::string& prompt, // Method to read an integer input from the user within a specified range
                               int minimum,
                               int maximum) const
 {
@@ -38,7 +38,7 @@ int Interface::readIntInRange(const std::string& prompt,
     }
 }
 
-double Interface::readPositiveDouble(const std::string& prompt) const
+double Interface::readPositiveDouble(const std::string& prompt) const // Method to read a positive double input from the user
 {
     while (true)
     {
@@ -62,7 +62,7 @@ double Interface::readPositiveDouble(const std::string& prompt) const
     }
 }
 
-std::string Interface::readNonEmptyLine(const std::string& prompt) const
+std::string Interface::readNonEmptyLine(const std::string& prompt) const // Method to read a non-empty line of input from the user
 {
     while (true)
     {
@@ -80,7 +80,7 @@ std::string Interface::readNonEmptyLine(const std::string& prompt) const
     }
 }
 
-std::string Interface::readSchedule(const std::string& prompt) const
+std::string Interface::readSchedule(const std::string& prompt) const // Method to read a valid schedule input from the user
 {
     while (true)
     {
@@ -97,7 +97,7 @@ std::string Interface::readSchedule(const std::string& prompt) const
     }
 }
 
-void Interface::listDepartments() const
+void Interface::listDepartments() const // Method to display the list of departments
 {
     if (TotalDepartments == 0)
     {

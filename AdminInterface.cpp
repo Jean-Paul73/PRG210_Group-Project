@@ -4,10 +4,10 @@
 #include "Department.h"
 #include <iostream>
 
-extern Department* StoreDepartments;
+extern Department* StoreDepartments; // Pointer to the array of departments
 extern int TotalDepartments;
 
-void AdminInterface::run()
+void AdminInterface::run() // Override the run method from the Interface class
 {
     while (true)
     {
@@ -18,7 +18,7 @@ void AdminInterface::run()
         std::cout << "4. Save Changes to CSV\n";
         std::cout << "5. Exit\n";
 
-        int choice = readIntInRange(
+        int choice = readIntInRange( 
             "Enter your choice [1, 2, 3, 4, 5]: ",
             1,
             5);
@@ -53,30 +53,30 @@ void AdminInterface::run()
     }
 }
 
-void AdminInterface::addDepartment()
+void AdminInterface::addDepartment() // Method to add a new department
 {
     std::string name =
         readNonEmptyLine("Enter department name: ");
 
     Department* newDepartments =
-        new Department[TotalDepartments + 1];
+        new Department[TotalDepartments + 1]; // Create a new array with one additional department
 
     for (int i = 0; i < TotalDepartments; i++)
     {
         newDepartments[i] = StoreDepartments[i];
     }
 
-    newDepartments[TotalDepartments].setDepartmentName(
+    newDepartments[TotalDepartments].setDepartmentName( // Set the name of the new department
         name.c_str());
 
     delete[] StoreDepartments;
     StoreDepartments = newDepartments;
-    TotalDepartments++;
+    TotalDepartments++; // Increment the total number of departments
 
     std::cout << "Department added successfully.\n";
 }
 
-void AdminInterface::addCourseToDepartment()
+void AdminInterface::addCourseToDepartment() // Method to add a new course to an existing department
 {
     if (TotalDepartments == 0)
     {
@@ -85,7 +85,7 @@ void AdminInterface::addCourseToDepartment()
         return;
     }
 
-    listDepartments();
+    listDepartments(); // Display the list of departments
 
     int departmentNumber = readIntInRange(
         "Enter department number [0 to go back]: ",
@@ -97,14 +97,14 @@ void AdminInterface::addCourseToDepartment()
         return;
     }
 
-    Department& selectedDepartment =
+    Department& selectedDepartment = // Reference to the selected department
         StoreDepartments[departmentNumber - 1];
 
-    std::cout << "\nCourses in "
+    std::cout << "\nCourses in " 
               << selectedDepartment.getDepartmentName()
               << '\n';
 
-    selectedDepartment.displayCourses();
+    selectedDepartment.displayCourses(); 
 
     std::string courseNumber =
         readNonEmptyLine("Enter course number: ");
@@ -118,12 +118,12 @@ void AdminInterface::addCourseToDepartment()
     double price =
         readPositiveDouble("Enter course price: ");
 
-    Course newCourse(courseNumber,
+    Course newCourse(courseNumber, // Create a new Course object
                      courseName,
                      schedule,
                      price);
 
-    selectedDepartment.addCourse(newCourse);
+    selectedDepartment.addCourse(newCourse); // Add the new course to the selected department
 
     std::cout << "Course added successfully.\n";
 }

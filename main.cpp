@@ -8,9 +8,9 @@
 #include <string>
 
 // Global variables requested in the project instructions.
-Department* StoreDepartments = nullptr;
+Department* StoreDepartments = nullptr; // Pointer to the array of departments
 int TotalDepartments = 0;
-const char* csvFile = "courses.csv";
+const char* csvFile = "courses.csv"; // Path to the CSV file for storing department and course data
 
 int readInitialChoice()  
 {
@@ -41,7 +41,7 @@ int readInitialChoice()
     }
 }
 
-int main()
+int main() // Main function to run the program
 {
     if (loadDataFromCSV())
     {
@@ -78,6 +78,6 @@ int main()
     delete userInterface;
     delete[] StoreDepartments;
 
-    std::cout << "Program closed.\n";
+    std::cout << "Program closed.\n"; // Display a message indicating that the program has closed
     return 0;
 }

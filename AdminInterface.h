@@ -3,7 +3,7 @@
 
 #include "Interface.h"
 
-class AdminInterface : public Interface
+class AdminInterface : public Interface // Derived class for the admin interface
 {
 private:
     void addDepartment();

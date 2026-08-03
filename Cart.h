@@ -2,7 +2,7 @@
 #define CART_H
 
 #include "Course.h"
-#include <string>
+#include <string> // Include the string header for using std::string
 
 class Cart
 {
