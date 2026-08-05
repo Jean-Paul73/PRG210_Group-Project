@@ -2,33 +2,43 @@
 #define DEPARTMENT_H
 
 #include "Course.h"
+#include <string>
+#include <vector>
+
+using namespace std;
 
 class Department
 {
 private:
-    char departmentName[100];
-    Course* courses;
-    int totalCourses;
+    string departmentName;       // Stores the department name
+    vector<Course> courses;      // Stores the courses
 
 public:
+    // Default constructor
     Department();
-    Department(const char* name);
 
-    // Needed because this class owns dynamic memory.
-    Department(const Department& other);
-    Department& operator=(const Department& other);
+    // Constructor with department name
+    Department(const string& name);
 
-    ~Department();
+    // Set the department name
+    void setDepartmentName(const string& name);
 
-    void setDepartmentName(const char* name); // Method to set the name of the department
-    const char* getDepartmentName() const;
+    // Return the department name
+    string getDepartmentName() const;
 
-    int getTotalCourses() const; // Method to get the total number of courses in the department
+    // Return the number of courses
+    int getTotalCourses() const;
+
+    // Add a new course
     void addCourse(const Course& newCourse);
 
-    Course* getCourse(int index); // Method to get a pointer to a course at a specific index in the department
+    // Return a pointer to a course
+    Course* getCourse(int index);
+
+    // Return a const pointer to a course
     const Course* getCourse(int index) const;
 
+    // Display all courses
     void displayCourses() const;
 };
 
