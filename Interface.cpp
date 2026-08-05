@@ -1,30 +1,38 @@
 #include "Interface.h"
 #include "Department.h"
+
 #include <iostream>
 #include <sstream>
+#include <vector>
 
-extern Department* StoreDepartments; // Pointer to the array of departments
-extern int TotalDepartments;
+using namespace std;
 
+// The vector is created in main.cpp
+extern vector<Department> StoreDepartments;
+
+// Destructor for the Interface class
 Interface::~Interface()
 {
 }
 
-int Interface::readIntInRange(const std::string& prompt, // Method to read an integer input from the user within a specified range
+// Read an integer between a minimum and maximum value
+int Interface::readIntInRange(const string& prompt,
                               int minimum,
                               int maximum) const
 {
     while (true)
     {
-        std::cout << prompt;
+        cout << prompt;
 
-        std::string input;
-        std::getline(std::cin, input);
+        string input;
+        getline(cin, input);
 
-        std::stringstream stream(input);
+        stringstream stream(input);
+
         int value;
         char extra;
 
+        // Check that the user entered only one valid number
         if ((stream >> value) &&
             !(stream >> extra) &&
             value >= minimum &&
@@ -33,59 +41,67 @@ int Interface::readIntInRange(const std::string& prompt, // Method to read an in
             return value;
         }
 
-        std::cout << "Invalid input. Enter a number from "
-                  << minimum << " to " << maximum << ".\n";
+        cout << "Invalid input. Enter a number from "
+             << minimum << " to "
+             << maximum << ".\n";
     }
 }
 
-double Interface::readPositiveDouble(const std::string& prompt) const // Method to read a positive double input from the user
+// Read a positive price from the user
+double Interface::readPositiveDouble(const string& prompt) const
 {
     while (true)
     {
-        std::cout << prompt;
+        cout << prompt;
 
-        std::string input;
-        std::getline(std::cin, input);
+        string input;
+        getline(cin, input);
 
-        std::stringstream stream(input);
+        stringstream stream(input);
+
         double value;
         char extra;
 
+        // Check that the price is a positive number
         if ((stream >> value) &&
             !(stream >> extra) &&
-            value > 0.0)
+            value > 0)
         {
             return value;
         }
 
-        std::cout << "Invalid price. Enter a positive number.\n";
+        cout << "Invalid price. Enter a positive number.\n";
     }
 }
 
-std::string Interface::readNonEmptyLine(const std::string& prompt) const // Method to read a non-empty line of input from the user
+// Read a line that is not empty
+string Interface::readNonEmptyLine(const string& prompt) const
 {
     while (true)
     {
-        std::cout << prompt;
+        cout << prompt;
 
-        std::string value;
-        std::getline(std::cin, value);
+        string value;
+        getline(cin, value);
 
+        // Return the value if it is not empty
         if (!value.empty())
         {
             return value;
         }
 
-        std::cout << "Input cannot be empty.\n";
+        cout << "Input cannot be empty.\n";
     }
 }
 
-std::string Interface::readSchedule(const std::string& prompt) const // Method to read a valid schedule input from the user
+// Read a valid course schedule
+string Interface::readSchedule(const string& prompt) const
 {
     while (true)
     {
-        std::string schedule = readNonEmptyLine(prompt);
+        string schedule = readNonEmptyLine(prompt);
 
+        // Check if the schedule is valid
         if (schedule == "M/W" ||
             schedule == "T/R" ||
             schedule == "W/F")
@@ -93,25 +109,30 @@ std::string Interface::readSchedule(const std::string& prompt) const // Method t
             return schedule;
         }
 
-        std::cout << "Invalid schedule. Enter M/W, T/R, or W/F.\n";
+        cout << "Invalid schedule. Enter M/W, T/R, or W/F.\n";
     }
 }
 
-void Interface::listDepartments() const // Method to display the list of departments
+// Display all departments
+void Interface::listDepartments() const
 {
-    if (TotalDepartments == 0)
+    // Check if the department vector is empty
+    if (StoreDepartments.empty())
     {
-        std::cout << "No departments are available.\n";
+        cout << "No departments are available.\n";
         return;
     }
 
-    std::cout << "\nDepartments\n";
-    std::cout << "------------------------------\n";
+    cout << "\nDepartments\n";
+    cout << "------------------------------\n";
 
-    for (int i = 0; i < TotalDepartments; i++)
+    // Display every department in the vector
+    for (int i = 0;
+         i < static_cast<int>(StoreDepartments.size());
+         i++)
     {
-        std::cout << i + 1 << ". "
-                  << StoreDepartments[i].getDepartmentName()
-                  << '\n';
+        cout << i + 1 << ". "
+             << StoreDepartments[i].getDepartmentName()
+             << endl;
     }
 }
