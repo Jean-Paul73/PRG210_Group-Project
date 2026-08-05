@@ -3,32 +3,40 @@
 #include "Department.h"
 #include "Interface.h"
 #include "StudentInterface.h"
+
 #include <iostream>
 #include <sstream>
 #include <string>
+#include <vector>
 
-// Global variables requested in the project instructions.
-Department* StoreDepartments = nullptr; // Pointer to the array of departments
-int TotalDepartments = 0;
-const char* csvFile = "courses.csv"; // Path to the CSV file for storing department and course data
+using namespace std;
 
-int readInitialChoice()  
+// Stores all departments in the program
+vector<Department> StoreDepartments;
+
+// Name of the CSV file
+const char* csvFile = "courses.csv";
+
+// Read the user's first menu choice
+int readInitialChoice()
 {
     while (true)
     {
-        std::cout << "\nInitial Menu\n";
-        std::cout << "1. Student\n";
-        std::cout << "2. Admin\n";
-        std::cout << "3. Exit\n";
-        std::cout << "Enter your choice [1, 2, 3]: ";
+        cout << "\nINITIAL MENU\n";
+        cout << "1. Student\n";
+        cout << "2. Admin\n";
+        cout << "3. Exit\n";
+        cout << "Enter your choice [1, 2, 3]: ";
 
-        std::string input;
-        std::getline(std::cin, input);
+        string input;
+        getline(cin, input);
 
-        std::stringstream stream(input);
+        stringstream stream(input);
+
         int choice;
         char extra;
 
+        // Check that the user entered only 1, 2, or 3
         if ((stream >> choice) &&
             !(stream >> extra) &&
             choice >= 1 &&
@@ -37,47 +45,54 @@ int readInitialChoice()
             return choice;
         }
 
-        std::cout << "Invalid input. Enter 1, 2, or 3.\n";
+        cout << "Invalid input. Enter 1, 2, or 3.\n";
     }
 }
 
-int main() // Main function to run the program
+// Main function
+int main()
 {
+    // Load information from the CSV file
     if (loadDataFromCSV())
     {
-        std::cout << "Course data loaded successfully.\n";
+        cout << "Course data loaded successfully.\n";
     }
     else
     {
-        std::cout << "No valid CSV data was loaded. "
-                  << "The program will start with an empty store.\n";
+        cout << "No valid CSV data was loaded.\n";
+        cout << "The program will start with an empty store.\n";
     }
 
-    int roleChoice = readInitialChoice();
-
-    Interface* userInterface = nullptr;
-
-    if (roleChoice == 1)
+    while (true)
     {
-        userInterface = new StudentInterface();
-    }
-    else if (roleChoice == 2)
-    {
-        userInterface = new AdminInterface();
-    }
-    else
-    {
-        delete[] StoreDepartments;
-        std::cout << "Program closed.\n";
-        return 0;
+        // Ask the user to choose Student, Admin, or Exit
+        int roleChoice = readInitialChoice();
+
+        Interface* userInterface = nullptr;
+
+        if (roleChoice == 1)
+        {
+            // Create the student menu
+            userInterface = new StudentInterface();
+        }
+        else if (roleChoice == 2)
+        {
+            // Create the admin menu
+            userInterface = new AdminInterface();
+        }
+        else
+        {
+            // Close the program
+            cout << "Program closed.\n";
+            break;
+        }
+
+        // Use polymorphism to run the selected menu
+        userInterface->run();
+
+        // Delete the menu object
+        delete userInterface;
     }
 
-    // Polymorphism: the base pointer calls the derived run() function.
-    userInterface->run();
-
-    delete userInterface;
-    delete[] StoreDepartments;
-
-    std::cout << "Program closed.\n"; // Display a message indicating that the program has closed
     return 0;
 }
