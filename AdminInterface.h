@@ -3,13 +3,17 @@
 
 #include "Interface.h"
 
-class AdminInterface : public Interface // Derived class for the admin interface
+class AdminInterface : public Interface
 {
 private:
+    // Add a new department
     void addDepartment();
+
+    // Add a course to a department
     void addCourseToDepartment();
 
 public:
+    // Display and control the Admin menu
     void run() override;
 };
 
