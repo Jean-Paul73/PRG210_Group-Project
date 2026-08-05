@@ -1,118 +1,49 @@
 #include "Department.h"
-#include <cstring>
 #include <iostream>
 
-Department::Department() // Default constructor to initialize a Department object
+using namespace std;
+
+// Default constructor
+Department::Department()
 {
-    departmentName[0] = '\0';
-    courses = nullptr;
-    totalCourses = 0;
+    departmentName = "";
 }
 
-Department::Department(const char* name) // Parameterized constructor to initialize a Department object with a specific name
+// Constructor with department name
+Department::Department(const string& name)
 {
-    courses = nullptr;
-    totalCourses = 0;
-    setDepartmentName(name);
+    departmentName = name;
 }
 
-Department::Department(const Department& other) // Copy constructor to create a new Department object as a copy of another
+// Set the department name
+void Department::setDepartmentName(const string& name)
 {
-    std::strncpy(departmentName, other.departmentName, 99);
-    departmentName[99] = '\0';
-
-    totalCourses = other.totalCourses;
-
-    if (totalCourses > 0)
-    {
-        courses = new Course[totalCourses];
-
-        for (int i = 0; i < totalCourses; i++)
-        {
-            courses[i] = other.courses[i];
-        }
-    }
-    else
-    {
-        courses = nullptr;
-    }
+    departmentName = name;
 }
 
-Department& Department::operator=(const Department& other) // Assignment operator to assign one Department object to another
-{
-    if (this != &other)
-    {
-        delete[] courses;
-
-        std::strncpy(departmentName, other.departmentName, 99);
-        departmentName[99] = '\0';
-
-        totalCourses = other.totalCourses;
-
-        if (totalCourses > 0)
-        {
-            courses = new Course[totalCourses];
-
-            for (int i = 0; i < totalCourses; i++)
-            {
-                courses[i] = other.courses[i];
-            }
-        }
-        else
-        {
-            courses = nullptr;
-        }
-    }
-
-    return *this;
-}
-
-Department::~Department()
-{
-    delete[] courses;
-}
-
-void Department::setDepartmentName(const char* name) // Method to set the name of the department
-{
-    if (name == nullptr)
-    {
-        departmentName[0] = '\0';
-        return;
-    }
-
-    std::strncpy(departmentName, name, 99);
-    departmentName[99] = '\0';
-}
-
-const char* Department::getDepartmentName() const // Method to get the name of the department
+// Return the department name
+string Department::getDepartmentName() const
 {
     return departmentName;
 }
 
-int Department::getTotalCourses() const // Method to get the total number of courses in the department
+// Return the number of courses
+int Department::getTotalCourses() const
 {
-    return totalCourses;
+    return courses.size();
 }
 
-void Department::addCourse(const Course& newCourse) // Method to add a new course to the department
+// Add a course to the vector
+void Department::addCourse(const Course& newCourse)
 {
-    Course* newArray = new Course[totalCourses + 1];
-
-    for (int i = 0; i < totalCourses; i++)
-    {
-        newArray[i] = courses[i];
-    }
-
-    newArray[totalCourses] = newCourse;
-
-    delete[] courses;
-    courses = newArray;
-    totalCourses++;
+    courses.push_back(newCourse);
 }
 
-Course* Department::getCourse(int index) // Method to get a pointer to a course at a specific index in the department
+// Return a pointer to a course
+Course* Department::getCourse(int index)
 {
-    if (index < 0 || index >= totalCourses)
+    // Check if the index is valid
+    if (index < 0 || index >= (int)courses.size())
     {
         return nullptr;
     }
@@ -120,9 +51,11 @@ Course* Department::getCourse(int index) // Method to get a pointer to a course 
     return &courses[index];
 }
 
-const Course* Department::getCourse(int index) const // Method to get a const pointer to a course at a specific index in the department
+// Return a const pointer to a course
+const Course* Department::getCourse(int index) const
 {
-    if (index < 0 || index >= totalCourses)
+    // Check if the index is valid
+    if (index < 0 || index >= (int)courses.size())
     {
         return nullptr;
     }
@@ -130,17 +63,20 @@ const Course* Department::getCourse(int index) const // Method to get a const po
     return &courses[index];
 }
 
-void Department::displayCourses() const // Method to display the list of courses in the department
+// Display all courses in the department
+void Department::displayCourses() const
 {
-    if (totalCourses == 0)
+    // Check if there are no courses
+    if (courses.empty())
     {
-        std::cout << "No courses are available in this department.\n";
+        cout << "No courses are available in this department.\n";
         return;
     }
 
-    for (int i = 0; i < totalCourses; i++)
+    // Display every course
+    for (int i = 0; i < (int)courses.size(); i++)
     {
-        std::cout << i + 1 << ". ";
+        cout << i + 1 << ". ";
         courses[i].display();
     }
 }
