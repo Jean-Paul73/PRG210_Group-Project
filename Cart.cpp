@@ -1,104 +1,92 @@
 #include "Cart.h"
-#include <iomanip>
 #include <iostream>
+#include <iomanip>
 
-Cart::Cart() // Constructor to initialize the cart
+using namespace std;
+
+// Constructor
+Cart::Cart()
 {
-    courses = nullptr;
-    schedules = nullptr;
-    totalCourses = 0;
     subtotal = 0.0;
 }
 
-Cart::~Cart() // Destructor to clean up dynamically allocated memory
+// Add a course to the cart
+void Cart::addCourse(const Course& course)
 {
-    delete[] courses;
-    delete[] schedules;
+    // Add the course to the list
+    courses.push_back(course);
+
+    // Update the subtotal
+    subtotal += course.getPrice();
 }
 
-void Cart::addCourse(const Course& course) // Method to add a course to the cart    
+// Display all courses in the cart
+void Cart::listCourses() const
 {
-    Course* newCourses = new Course[totalCourses + 1];
-    std::string* newSchedules = new std::string[totalCourses + 1];
-
-    for (int i = 0; i < totalCourses; i++)
+    // Check if the cart is empty
+    if (courses.empty())
     {
-        newCourses[i] = courses[i]; // Copy existing courses to the new array
-        newSchedules[i] = schedules[i];
-    }
-
-    newCourses[totalCourses] = course;
-    newSchedules[totalCourses] = course.getSchedule(); // Store the schedule of the added course
-
-    delete[] courses;
-    delete[] schedules;
-
-    courses = newCourses;
-    schedules = newSchedules;
-
-    subtotal += course.getPrice(); // Update the subtotal with the price of the added course
-    totalCourses++;
-}
-
-void Cart::listCourses() const // Method to list all courses in the cart
-{
-    if (isEmpty())
-    {
-        std::cout << "No courses in the cart.\n";
+        cout << "No courses in the cart.\n";
         return;
     }
 
-    std::cout << "\nCourses in Cart\n";
-    std::cout << "------------------------------\n";
+    cout << "\nCourses in Cart\n";
+    cout << "---------------------------------------------\n";
 
-    for (int i = 0; i < totalCourses; i++) // Loop through the courses in the cart and display their details
+    int number = 1;
+
+    // Display every course in the list
+    for (const Course& course : courses)
     {
-        std::cout << i + 1 << ". " 
-                  << courses[i].getCourseNumber() << " | "
-                  << courses[i].getCourseName() << " | "
-                  << schedules[i] << " | $"
-                  << std::fixed << std::setprecision(2)
-                  << courses[i].getPrice() << '\n';
+        cout << number << ". "
+             << course.getCourseNumber() << " | "
+             << course.getCourseName() << " | "
+             << course.getSchedule() << " | $"
+             << fixed << setprecision(2)
+             << course.getPrice() << endl;
+
+        number++;
     }
 
-    std::cout << "------------------------------\n";
-    std::cout << "Subtotal: $" << std::fixed << std::setprecision(2)
-              << getSubtotal() << '\n';
-    std::cout << "Tax (13%): $" << getTax() << '\n';
-    std::cout << "Total: $" << getTotalWithTax() << '\n';
+    cout << "---------------------------------------------\n";
+    cout << "Subtotal: $" << fixed << setprecision(2)
+         << getSubtotal() << endl;
+    cout << "Tax (13%): $" << getTax() << endl;
+    cout << "Total: $" << getTotalWithTax() << endl;
 }
 
-void Cart::clear() // Method to clear the cart and reset its state
+// Remove all courses from the cart
+void Cart::clear()
 {
-    delete[] courses;
-    delete[] schedules;
-
-    courses = nullptr;
-    schedules = nullptr;
-    totalCourses = 0;
+    courses.clear();
     subtotal = 0.0;
 }
 
-bool Cart::isEmpty() const // Method to check if the cart is empty
+// Check if the cart is empty
+bool Cart::isEmpty() const
 {
-    return totalCourses == 0;
+    return courses.empty();
 }
 
-int Cart::getTotalCourses() const // Method to get the total number of courses in the cart
+// Return the number of courses
+int Cart::getTotalCourses() const
 {
-    return totalCourses;
+    return courses.size();
 }
 
+// Return the subtotal
 double Cart::getSubtotal() const
 {
     return subtotal;
 }
 
+// Calculate the tax
 double Cart::getTax() const
 {
     return subtotal * 0.13;
 }
 
+// Return the total price with tax
 double Cart::getTotalWithTax() const
 {
     return subtotal + getTax();
