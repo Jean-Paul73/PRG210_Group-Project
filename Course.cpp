@@ -1,0 +1,65 @@
+#include "Course.h"
+
+Course::Course()
+    : courseNumber(""), courseName(""), schedule(""), price(0.0)
+{
+}
+
+Course::Course(const std::string& number,
+               const std::string& name,
+               const std::string& courseSchedule,
+               double coursePrice)
+    : courseNumber(number),
+      courseName(name),
+      schedule(courseSchedule),
+      price(coursePrice)
+{
+}
+
+void Course::setCourseNumber(const std::string& number)
+{
+    courseNumber = number;
+}
+
+void Course::setCourseName(const std::string& name)
+{
+    courseName = name;
+}
+
+void Course::setSchedule(const std::string& courseSchedule)
+{
+    schedule = courseSchedule;
+}
+
+void Course::setPrice(double coursePrice)
+{
+    price = coursePrice;
+}
+
+std::string Course::getCourseNumber() const
+{
+    return courseNumber;
+}
+
+std::string Course::getCourseName() const
+{
+    return courseName;
+}
+
+std::string Course::getSchedule() const
+{
+    return schedule;
+}
+
+double Course::getPrice() const
+{
+    return price;
+}
+
+void Course::display() const
+{
+    std::cout << "  Course Number : " << courseNumber << '\n'
+              << "  Course Name   : " << courseName   << '\n'
+              << "  Schedule      : " << schedule     << '\n'
+              << "  Price         : $" << price       << '\n';
+}
