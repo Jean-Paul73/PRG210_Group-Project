@@ -2,128 +2,149 @@
 #include "Course.h"
 #include "DataManager.h"
 #include "Department.h"
+
 #include <iostream>
+#include <vector>
 
-extern Department* StoreDepartments; // Pointer to the array of departments
-extern int TotalDepartments;
+using namespace std;
 
-void AdminInterface::run() // Override the run method from the Interface class
+// This vector is created in main.cpp
+extern vector<Department> StoreDepartments;
+
+// This function displays the Admin menu
+void AdminInterface::run()
 {
     while (true)
     {
-        std::cout << "\nAdmin Main Menu\n";
-        std::cout << "1. List Departments\n";
-        std::cout << "2. Add Department\n";
-        std::cout << "3. Add Course to Department\n";
-        std::cout << "4. Save Changes to CSV\n";
-        std::cout << "5. Exit\n";
+        cout << "\nADMIN MAIN MENU\n";
+        cout << "1. List Departments\n";
+        cout << "2. Add Department\n";
+        cout << "3. Add Course to Department\n";
+        cout << "4. Save Changes to CSV\n";
+        cout << "5. Go Back\n";
 
-        int choice = readIntInRange( 
+        // Read a valid menu choice from 1 to 5
+        int choice = readIntInRange(
             "Enter your choice [1, 2, 3, 4, 5]: ",
             1,
-            5);
+            5
+        );
 
         if (choice == 1)
         {
+            // Display all departments
             listDepartments();
         }
         else if (choice == 2)
         {
+            // Add a new department
             addDepartment();
         }
         else if (choice == 3)
         {
+            // Add a course to a department
             addCourseToDepartment();
         }
         else if (choice == 4)
         {
+            // Save all information to the CSV file
             if (saveDataToCSV())
             {
-                std::cout << "Changes saved successfully.\n";
+                cout << "Changes saved successfully.\n";
             }
             else
             {
-                std::cout << "Error: Changes could not be saved.\n";
+                cout << "Error: Changes could not be saved.\n";
             }
         }
-        else
+        else if (choice == 5)
         {
+            // Return to the main menu
             return;
         }
     }
 }
 
-void AdminInterface::addDepartment() // Method to add a new department
+// This function adds a new department
+void AdminInterface::addDepartment()
 {
-    std::string name =
-        readNonEmptyLine("Enter department name: ");
+    // Ask the user to enter a department name
+    string name = readNonEmptyLine(
+        "Enter department name: "
+    );
 
-    Department* newDepartments =
-        new Department[TotalDepartments + 1]; // Create a new array with one additional department
+    // Create a new Department object
+    Department newDepartment(name);
 
-    for (int i = 0; i < TotalDepartments; i++)
-    {
-        newDepartments[i] = StoreDepartments[i];
-    }
+    // Add the department to the vector
+    StoreDepartments.push_back(newDepartment);
 
-    newDepartments[TotalDepartments].setDepartmentName( // Set the name of the new department
-        name.c_str());
-
-    delete[] StoreDepartments;
-    StoreDepartments = newDepartments;
-    TotalDepartments++; // Increment the total number of departments
-
-    std::cout << "Department added successfully.\n";
+    cout << "Department added successfully.\n";
 }
 
-void AdminInterface::addCourseToDepartment() // Method to add a new course to an existing department
+// This function adds a new course to a selected department
+void AdminInterface::addCourseToDepartment()
 {
-    if (TotalDepartments == 0)
+    // Check if there are any departments
+    if (StoreDepartments.empty())
     {
-        std::cout << "No departments are available. "
-                  << "Add a department first.\n";
+        cout << "No departments are available.\n";
+        cout << "Add a department first.\n";
         return;
     }
 
-    listDepartments(); // Display the list of departments
+    // Display all departments
+    listDepartments();
 
+    // Ask the user to choose a department
     int departmentNumber = readIntInRange(
         "Enter department number [0 to go back]: ",
         0,
-        TotalDepartments);
+        static_cast<int>(StoreDepartments.size())
+    );
 
+    // Return to the Admin menu if the user enters 0
     if (departmentNumber == 0)
     {
         return;
     }
 
-    Department& selectedDepartment = // Reference to the selected department
+    // Get the selected department
+    Department& selectedDepartment =
         StoreDepartments[departmentNumber - 1];
 
-    std::cout << "\nCourses in " 
-              << selectedDepartment.getDepartmentName()
-              << '\n';
+    cout << "\nCourses in "
+         << selectedDepartment.getDepartmentName()
+         << "\n";
 
-    selectedDepartment.displayCourses(); 
+    // Display current courses in the department
+    selectedDepartment.displayCourses();
 
-    std::string courseNumber =
+    // Ask the user for the course information
+    string courseNumber =
         readNonEmptyLine("Enter course number: ");
 
-    std::string courseName =
+    string courseName =
         readNonEmptyLine("Enter course name: ");
 
-    std::string schedule =
-        readSchedule("Enter course schedule [M/W, T/R, W/F]: ");
+    string schedule =
+        readSchedule(
+            "Enter course schedule [M/W, T/R, W/F]: "
+        );
 
     double price =
         readPositiveDouble("Enter course price: ");
 
-    Course newCourse(courseNumber, // Create a new Course object
-                     courseName,
-                     schedule,
-                     price);
+    // Create a new Course object
+    Course newCourse(
+        courseNumber,
+        courseName,
+        schedule,
+        price
+    );
 
-    selectedDepartment.addCourse(newCourse); // Add the new course to the selected department
+    // Add the course to the selected department
+    selectedDepartment.addCourse(newCourse);
 
-    std::cout << "Course added successfully.\n";
+    cout << "Course added successfully.\n";
 }
