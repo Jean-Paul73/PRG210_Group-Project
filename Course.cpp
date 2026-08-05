@@ -1,8 +1,11 @@
 #include "Course.h"
-#include <iomanip>
 #include <iostream>
+#include <iomanip>
 
-Course::Course() // Default constructor to initialize a Course object
+using namespace std;
+
+// Default constructor
+Course::Course()
 {
     courseNumber = "";
     courseName = "";
@@ -10,9 +13,10 @@ Course::Course() // Default constructor to initialize a Course object
     price = 0.0;
 }
 
-Course::Course(const std::string& number, // Parameterized constructor to initialize a Course object with specific values
-               const std::string& name,
-               const std::string& courseSchedule,
+// Constructor with values
+Course::Course(const string& number,
+               const string& name,
+               const string& courseSchedule,
                double coursePrice)
 {
     courseNumber = number;
@@ -21,54 +25,63 @@ Course::Course(const std::string& number, // Parameterized constructor to initia
     price = coursePrice;
 }
 
-void Course::setCourseNumber(const std::string& number) // Method to set the course number
+// Set the course number
+void Course::setCourseNumber(const string& number)
 {
     courseNumber = number;
 }
 
-void Course::setCourseName(const std::string& name)
+// Set the course name
+void Course::setCourseName(const string& name)
 {
     courseName = name;
 }
 
-void Course::setSchedule(const std::string& courseSchedule)
+// Set the course schedule
+void Course::setSchedule(const string& courseSchedule)
 {
     schedule = courseSchedule;
 }
 
+// Set the course price
 void Course::setPrice(double coursePrice)
 {
-    if (coursePrice >= 0.0)
+    if (coursePrice >= 0)
     {
         price = coursePrice;
     }
 }
 
-std::string Course::getCourseNumber() const
+// Return the course number
+string Course::getCourseNumber() const
 {
     return courseNumber;
 }
 
-std::string Course::getCourseName() const
+// Return the course name
+string Course::getCourseName() const
 {
     return courseName;
 }
 
-std::string Course::getSchedule() const
+// Return the course schedule
+string Course::getSchedule() const
 {
     return schedule;
 }
 
+// Return the course price
 double Course::getPrice() const
 {
     return price;
 }
 
-void Course::display() const // Method to display the course details
+// Display the course information
+void Course::display() const
 {
-    std::cout << courseNumber << " | "
-              << courseName << " | "
-              << schedule << " | $"
-              << std::fixed << std::setprecision(2)
-              << price << '\n';
+    cout << courseNumber << " | "
+         << courseName << " | "
+         << schedule << " | $"
+         << fixed << setprecision(2)
+         << price << endl;
 }
