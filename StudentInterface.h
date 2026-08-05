@@ -7,14 +7,20 @@
 class StudentInterface : public Interface
 {
 private:
-    Cart cart; // Object to manage the student's cart
+    Cart cart; // Stores the student's shopping cart
 
+    // Display the cart menu
     void showCartMenu();
+
+    // Display all departments
     void browseDepartments();
+
+    // Display all courses in one department
     void showCoursesMenu(int departmentIndex);
 
 public:
-    void run() override; // Override the run method from the Interface class
+    // Run the student menu
+    void run() override;
 };
 
 #endif
