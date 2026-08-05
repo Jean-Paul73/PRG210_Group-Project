@@ -6,20 +6,28 @@
 class Interface
 {
 protected:
-    int readIntInRange(const std::string& prompt, // Method to read an integer input from the user within a specified range
+    // Read an integer between the minimum and maximum values
+    int readIntInRange(const std::string& prompt,
                        int minimum,
                        int maximum) const;
 
-    double readPositiveDouble(const std::string& prompt) const; // Method to read a positive double input from the user
+    // Read a positive number
+    double readPositiveDouble(const std::string& prompt) const;
 
-    std::string readNonEmptyLine(const std::string& prompt) const; 
+    // Read a line that is not empty
+    std::string readNonEmptyLine(const std::string& prompt) const;
 
-    std::string readSchedule(const std::string& prompt) const; 
+    // Read a valid course schedule
+    std::string readSchedule(const std::string& prompt) const;
 
+    // Display all departments
     void listDepartments() const;
 
 public:
+    // Every derived class must have a run function
     virtual void run() = 0;
+
+    // Virtual destructor
     virtual ~Interface();
 };
 
