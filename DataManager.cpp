@@ -1,197 +1,169 @@
 #include "DataManager.h"
 #include "Course.h"
 #include "Department.h"
+
 #include <fstream>
 #include <iostream>
 #include <sstream>
 #include <string>
+#include <vector>
 
-extern Department* StoreDepartments; // Pointer to the array of departments
-extern int TotalDepartments; // Total number of departments in the store
-extern const char* csvFile; // Path to the CSV file for storing department and course data
+using namespace std;
 
-static bool splitDepartmentLine(const std::string& line, // Method to split a department line from the CSV file into its components
-                                std::string& name,
-                                int& courseCount)
-{
-    std::size_t comma = line.find(','); // Find the position of the first comma in the line
+// The vector is created in main.cpp
+extern vector<Department> StoreDepartments;
 
-    if (comma == std::string::npos)
-    {
-        return false;
-    }
+// The CSV file name is created in main.cpp
+extern const char* csvFile;
 
-    name = line.substr(0, comma);
-
-    std::stringstream stream(line.substr(comma + 1));
-    return static_cast<bool>(stream >> courseCount);
-}
-
-static bool splitCourseLine(const std::string& line, // Method to split a course line from the CSV file into its components
-                            std::string& number,
-                            std::string& name,
-                            std::string& schedule,
-                            double& price)
-{
-    std::stringstream stream(line);
-
-    if (!std::getline(stream, number, ','))
-    {
-        return false;
-    }
-
-    if (!std::getline(stream, name, ','))
-    {
-        return false;
-    }
-
-    if (!std::getline(stream, schedule, ','))
-    {
-        return false;
-    }
-
-    std::string priceText;
-
-    if (!std::getline(stream, priceText))
-    {
-        return false;
-    }
-
-    std::stringstream priceStream(priceText);
-    return static_cast<bool>(priceStream >> price);
-}
-
+// Load departments and courses from the CSV file
 bool loadDataFromCSV()
 {
-    std::ifstream file(csvFile); // Open the CSV file for reading
+    // Open the CSV file
+    ifstream file(csvFile);
 
+    // Check if the file opened correctly
     if (!file)
     {
-        // The file may not exist the first time the program runs.
+        cout << "No CSV file found. Starting with empty data.\n";
         return false;
     }
 
-    int departmentCount = 0;
+    // Remove any old data from the vector
+    StoreDepartments.clear();
 
-    if (!(file >> departmentCount)) 
+    int numberOfDepartments;
+
+    // Read the number of departments
+    if (!(file >> numberOfDepartments))
     {
-        std::cout << "CSV file is not in the expected format.\n";
+        cout << "Invalid CSV file.\n";
         return false;
     }
 
-    file.ignore(10000, '\n'); // Ignore the rest of the line after reading the department count
+    // Ignore the remaining newline
+    file.ignore(10000, '\n');
 
-    delete[] StoreDepartments;
-    StoreDepartments = nullptr;
-    TotalDepartments = 0;
-
-    if (departmentCount <= 0)
+    // Read every department
+    for (int i = 0; i < numberOfDepartments; i++)
     {
-        return true;
-    }
+        string departmentLine;
 
-    StoreDepartments = new Department[departmentCount]; // Allocate memory for the array of departments
-
-    for (int i = 0; i < departmentCount; i++)
-    {
-        std::string departmentLine;
-
-        if (!std::getline(file, departmentLine))
+        // Read one department line
+        if (!getline(file, departmentLine))
         {
-            std::cout << "CSV file ended unexpectedly.\n";
-            delete[] StoreDepartments;
-            StoreDepartments = nullptr;
-            TotalDepartments = 0;
+            cout << "Missing department information.\n";
             return false;
         }
 
-        std::string departmentName; // Variable to hold the department name
+        stringstream departmentStream(departmentLine);
+
+        string departmentName;
+        string courseCountText;
+
+        // Read the department name
+        getline(departmentStream, departmentName, ',');
+
+        // Read the number of courses
+        getline(departmentStream, courseCountText);
+
         int courseCount = 0;
+        stringstream countStream(courseCountText);
+        countStream >> courseCount;
 
-        if (!splitDepartmentLine(departmentLine,
-                                 departmentName,
-                                 courseCount))
-        {
-            std::cout << "Invalid department line in CSV.\n"; // Error message for invalid department line
-            delete[] StoreDepartments;
-            StoreDepartments = nullptr;
-            TotalDepartments = 0;
-            return false;
-        }
+        // Create a new department
+        Department department(departmentName);
 
-        StoreDepartments[i].setDepartmentName(departmentName.c_str()); // Set the name of the department
-
+        // Read all courses in this department
         for (int j = 0; j < courseCount; j++)
         {
-            std::string courseLine;
+            string courseLine;
 
-            if (!std::getline(file, courseLine))
+            // Read one course line
+            if (!getline(file, courseLine))
             {
-                std::cout << "CSV file ended unexpectedly.\n";
-                delete[] StoreDepartments;
-                StoreDepartments = nullptr;
-                TotalDepartments = 0;
+                cout << "Missing course information.\n";
                 return false;
             }
 
-            std::string number;
-            std::string name;
-            std::string schedule;
+            stringstream courseStream(courseLine);
+
+            string courseNumber;
+            string courseName;
+            string schedule;
+            string priceText;
+
+            // Separate the course information using commas
+            getline(courseStream, courseNumber, ',');
+            getline(courseStream, courseName, ',');
+            getline(courseStream, schedule, ',');
+            getline(courseStream, priceText);
+
             double price = 0.0;
+            stringstream priceStream(priceText);
+            priceStream >> price;
 
-            if (!splitCourseLine(courseLine,
-                                 number,
-                                 name,
-                                 schedule,
-                                 price))
-            {
-                std::cout << "Invalid course line in CSV.\n"; // Error message for invalid course line
-                delete[] StoreDepartments;
-                StoreDepartments = nullptr;
-                TotalDepartments = 0;
-                return false;
-            }
+            // Create a Course object
+            Course course(
+                courseNumber,
+                courseName,
+                schedule,
+                price
+            );
 
-            Course course(number, name, schedule, price);
-            StoreDepartments[i].addCourse(course);
+            // Add the course to the department
+            department.addCourse(course);
         }
+
+        // Add the department to the vector
+        StoreDepartments.push_back(department);
     }
 
-    TotalDepartments = departmentCount;
+    cout << "CSV data loaded successfully.\n";
     return true;
 }
 
-bool saveDataToCSV() // Method to save the department and course data to a CSV file
+// Save departments and courses to the CSV file
+bool saveDataToCSV()
 {
-    std::ofstream file(csvFile);
+    // Open the CSV file for writing
+    ofstream file(csvFile);
 
+    // Check if the file opened correctly
     if (!file)
     {
+        cout << "Could not open the CSV file.\n";
         return false;
     }
 
-    file << TotalDepartments << '\n';
+    // Save the number of departments
+    file << StoreDepartments.size() << endl;
 
-    for (int i = 0; i < TotalDepartments; i++)
+    // Save every department
+    for (int i = 0;
+         i < static_cast<int>(StoreDepartments.size());
+         i++)
     {
-        file << StoreDepartments[i].getDepartmentName()
-             << ','
-             << StoreDepartments[i].getTotalCourses()
-             << '\n';
+        Department& department = StoreDepartments[i];
 
+        // Save department name and course count
+        file << department.getDepartmentName() << ","
+             << department.getTotalCourses() << endl;
+
+        // Save every course in the department
         for (int j = 0;
-             j < StoreDepartments[i].getTotalCourses();
+             j < department.getTotalCourses();
              j++)
         {
-            const Course* course =
-                StoreDepartments[i].getCourse(j);
+            Course* course = department.getCourse(j);
 
+            // Check that the course exists
             if (course != nullptr)
             {
-                file << course->getCourseNumber() << ','
-                     << course->getCourseName() << ','
-                     << course->getSchedule() << ','
-                     << course->getPrice() << '\n';
+                file << course->getCourseNumber() << ","
+                     << course->getCourseName() << ","
+                     << course->getSchedule() << ","
+                     << course->getPrice() << endl;
             }
         }
     }
